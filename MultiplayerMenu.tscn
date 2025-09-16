@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjrk580kjut7u"]
+
+[ext_resource type="Script" uid="uid://bdcuea30nssur" path="res://MultiplayerMenu.gd" id="1_huwya"]
+
+[node name="MultiplayerMenu" type="CanvasLayer"]
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
+script = ExtResource("1_huwya")
+
+[node name="Panel" type="Panel" parent="."]
+offset_right = 148.0
+offset_bottom = 112.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Host" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "HOST"
+
+[node name="Join" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "JOIN"
+
+[node name="Port" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "12345"
+placeholder_text = "PORT"
+
+[node name="JoinIP" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "JOIN IP"
+
+[node name="Username" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "USERNAME"
+
+[node name="Status" type="RichTextLabel" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "NOT CONNECTED"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="Panel/VBoxContainer/Host" to="." method="on_host_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Join" to="." method="on_join_pressed"]

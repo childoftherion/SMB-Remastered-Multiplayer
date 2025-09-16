@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=4 uid="uid://dnlgawye840rs"]
+[gd_scene load_steps=68 format=4 uid="uid://dnlgawye840rs"]
 
 [ext_resource type="Script" uid="uid://bqetotvkgfpta" path="res://Scripts/Parts/TitleScreen.gd" id="1_1wpe0"]
 [ext_resource type="Texture2D" uid="uid://d01emqx4qafd7" path="res://Assets/Sprites/UI/TitleSMB1.png" id="2_1j3pg"]
@@ -29,6 +29,7 @@
 [ext_resource type="JSON" path="res://Assets/Sprites/UI/TitleScreenStars.json" id="30_p54in"]
 [ext_resource type="Shader" uid="uid://x7lh23cq2u38" path="res://Scenes/Parts/ShadowShader.gdshader" id="31_wjo1g"]
 [ext_resource type="JSON" path="res://Assets/Audio/BGM/TitleBGM.json" id="37_twc32"]
+[ext_resource type="PackedScene" uid="uid://cjrk580kjut7u" path="res://MultiplayerMenu.tscn" id="38_wjo1g"]
 [ext_resource type="PackedScene" uid="uid://b8e82usnfbw1t" path="res://Scenes/Prefabs/UI/ExtraWorldSelect.tscn" id="41_obcl5"]
 [ext_resource type="Script" uid="uid://caq1qiwmy0mox" path="res://Scripts/Parts/BetterAnimatedSprite.gd" id="48_b3nob"]
 [ext_resource type="JSON" path="res://Assets/Sprites/UI/Title1.json" id="51_la5b0"]
@@ -1452,6 +1453,8 @@ property_name = "stream"
 mode = 2
 resource_json = ExtResource("37_twc32")
 metadata/_custom_type_script = "uid://cbal8ms2oe1ik"
+
+[node name="MultiplayerMenu" parent="." instance=ExtResource("38_wjo1g")]
 
 [connection signal="closed" from="CanvasLayer/Options1" to="CanvasLayer/Options1" method="show"]
 [connection signal="closed" from="CanvasLayer/Options1" to="CanvasLayer/QuitDialog" method="start"]
