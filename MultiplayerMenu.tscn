@@ -29,12 +29,10 @@ text = "JOIN"
 
 [node name="Port" type="LineEdit" parent="Panel/VBoxContainer"]
 layout_mode = 2
-text = "12345"
 placeholder_text = "PORT"
 
 [node name="JoinIP" type="LineEdit" parent="Panel/VBoxContainer"]
 layout_mode = 2
-text = "127.0.0.1"
 placeholder_text = "JOIN IP"
 
 [node name="Username" type="LineEdit" parent="Panel/VBoxContainer"]

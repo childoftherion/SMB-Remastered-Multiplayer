@@ -3,7 +3,7 @@ extends Node
 @export var local_player: CharacterBody2D
 var remote_player = load("res://MultiplayerPlayer.tscn")
 var username
-
+var connected = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_player_connected)
@@ -62,12 +62,14 @@ func host(port):
 	peer.create_server(port)
 	multiplayer.multiplayer_peer = peer
 	print("(SERVER) Hosted successfully")
+	connected = true
 
 func join(ip, port):
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_client(ip, port)
 	multiplayer.multiplayer_peer = peer
 	print("(CLIENT) Attempting to join")
+	connected = true
 	
 func _on_player_connected(id):
 	print("Player Connected")
@@ -79,7 +81,9 @@ func _on_connected_successfully():
 	print("(CLIENT) Joined Successfully")
 	
 func _on_connected_fail():
+	connected = false
 	print("(CLIENT) Failed To Connect")
 	
 func _on_server_disconnected():
+	connected = false
 	print("(CLIENT) Disconnected From Server")

@@ -14,24 +14,19 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	host.disabled = Multiplayer.connected
+	join.disabled = Multiplayer.connected
+	port.editable = !Multiplayer.connected
+	join_ip.editable = !Multiplayer.connected
+	username.editable = !Multiplayer.connected
 	pass
 
 
 func on_host_pressed() -> void:
 	Multiplayer.username = username.text
-	host.disabled = true
-	join.disabled = true
-	port.editable = false
-	join_ip.editable = false
-	username.editable = false
 	Multiplayer.host(int(port.text))
 
 
 func on_join_pressed() -> void:
 	Multiplayer.username = username.text
-	host.disabled = true
-	join.disabled = true
-	port.editable = false
-	join_ip.editable = false
-	username.editable = false
 	Multiplayer.join(str(join_ip.text), int(port.text))
