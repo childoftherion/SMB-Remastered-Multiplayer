@@ -1,7 +1,7 @@
 extends Node
 
 @export var local_player: CharacterBody2D
-var remote_player = load("res://Scenes/Prefabs/Entities/PlayerGhost.tscn")
+var remote_player = load("res://MultiplayerPlayer.tscn")
 var username
 
 # Called when the node enters the scene tree for the first time.
@@ -12,18 +12,18 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
-func build_multiplayer_data(player: Player) -> String:
+func build_multiplayer_data(player: Player):
 	var data = {
 		"position": { "x": player.global_position.x, "y": player.global_position.y },
-		"animation": player.sprite.animation,       # animation name
-		"frame": player.sprite.frame,               # current frame
-		"scale_x": player.sprite.scale.x,           # direction
-		"power_state": player.power_state.state_name,  # "Small", "Big", "Fire"
-		"character": player.character,              # "Mario", "Luigi", etc.
+		"animation": player.sprite.animation,
+		"frame": player.sprite.frame,
+		"scale_x": player.sprite.scale.x,
+		"power_state": Player.POWER_STATES.find(player.power_state.state_name),
+		"character": player.character,
 		"level": Global.current_level.scene_file_path
 	}
 
-	return JSON.stringify(data)
+	return data
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
 		player_state.rpc(build_multiplayer_data(local_player))
 
 @rpc("any_peer", "call_remote", "unreliable", 0)
-func player_state(data: String):
+func player_state(data):
 	if !local_player:
 		return
 	var sender_player = local_player.get_parent().get_node_or_null(str(multiplayer.get_remote_sender_id()))
@@ -45,9 +45,7 @@ func player_state(data: String):
 			var new_remote_player = remote_player.instantiate()
 			new_remote_player.name = str(multiplayer.get_remote_sender_id())
 			local_player.get_parent().add_child(new_remote_player)
-		
-	#print(str(multiplayer.get_remote_sender_id()) + " Sent a position: " + str(pos))
-	
+			
 func host(port):
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(port)

@@ -1,78 +1,70 @@
-[gd_scene load_steps=5 format=3 uid="uid://cusxrrbdmcfgy"]
+[gd_scene load_steps=8 format=3 uid="uid://cusxrrbdmcfgy"]
 
+[ext_resource type="Script" uid="uid://blerbydu8rwoy" path="res://MultiplayerPlayer.gd" id="1_q2flt"]
+[ext_resource type="Shader" uid="uid://cjfd0fbhvx370" path="res://Scenes/Parts/DitheredTransparency.gdshader" id="2_jt2yl"]
+[ext_resource type="SpriteFrames" uid="uid://328p7l1rmy00" path="res://Resources/SpriteFrames/Player/Toad/Big.tres" id="3_3bqva"]
+[ext_resource type="Script" uid="uid://b08qfwj5jk6g1" path="res://Scripts/Parts/PlayerSprite.gd" id="4_hgcqp"]
 [ext_resource type="Script" uid="uid://cbal8ms2oe1ik" path="res://Scripts/Classes/Components/ResourceSetterNew.gd" id="5_uwbxn"]
 [ext_resource type="Script" uid="uid://co6tjg3w6qpd8" path="res://Scripts/Parts/LabelFontChanger.gd" id="6_uj78x"]
-[ext_resource type="SpriteFrames" uid="uid://cjblhx4flkqva" path="res://Resources/SpriteFrames/Player/Mario/Big.tres" id="7_3bqva"]
 
-[sub_resource type="GDScript" id="GDScript_w50or"]
-script/source = "extends Node2D
-@onready var sprite: PlayerSprite = $PlayerSprite
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_chsgd"]
+shader = ExtResource("2_jt2yl")
 
-static var idx := 0
-
-var recording := []
-
-var current_power_state := \"\"
-
-func delete() -> void:
-	idx = 0
-
-func apply_data(data := \"\") -> void:
-	if Global.current_level == null:
-		hide()
-		return
-
-	var values: Dictionary = JSON.parse_string(data)
-	if values == null:
-		push_warning(\"Failed to parse ghost data JSON\")
-		return
-
-	# Position
-	var pos = values.position
-	global_position = Vector2(pos[\"x\"], pos[\"y\"])
-
-	# Animation and frame
-	$AnimatedSprite2D.animation = values.animation
-	$AnimatedSprite2D.frame = int(values.frame)
-
-	# Scale/direction
-	$AnimatedSprite2D.scale.x = float(values.scale_x)
-
-	# Optionally: select the sprite frames based on character and power-up
-	# You can load the sprite set manually like:
-	# var sprite_path = \"res://Sprites/\" + values.character + \"/\" + values.power_state + \".tres\"
-	# $AnimatedSprite2D.frames = load(sprite_path)
-
-	# Visibility based on level
-	visible = values.level == Global.current_level.scene_file_path
-"
-
-[node name="MultiplayerPlayer" type="Node2D"]
+[node name="MultiplayerPlayer" type="Node2D" node_paths=PackedStringArray("resource_setter")]
 process_mode = 3
 physics_interpolation_mode = 1
 visibility_layer = 2
-script = SubResource("GDScript_w50or")
+script = ExtResource("1_q2flt")
+resource_setter = NodePath("PlayerSprite/ResourceSetterNew")
+
+[node name="OldPlayerSprite" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("resource_setter")]
+visible = false
+modulate = Color(1, 1, 1, 0.75)
+clip_children = 2
+material = SubResource("ShaderMaterial_chsgd")
+position = Vector2(0, 1)
+sprite_frames = ExtResource("3_3bqva")
+animation = &"Move"
+speed_scale = 0.0
+offset = Vector2(0, 1)
+script = ExtResource("4_hgcqp")
+resource_setter = NodePath("ResourceSetterNew")
+metadata/_custom_type_script = "uid://b08qfwj5jk6g1"
+
+[node name="Tint" type="ColorRect" parent="OldPlayerSprite"]
+visible = false
+offset_left = -521.0
+offset_top = -482.0
+offset_right = 478.0
+offset_bottom = 517.0
+color = Color(0.968627, 0.223529, 0.0627451, 1)
+
+[node name="ResourceSetterNew" type="Node" parent="OldPlayerSprite"]
+script = ExtResource("5_uwbxn")
+metadata/_custom_type_script = "uid://cbal8ms2oe1ik"
 
 [node name="Label" type="Label" parent="."]
-offset_left = -61.0
-offset_top = -36.0
-offset_right = 61.0
-offset_bottom = -20.0
+visible = false
+offset_left = -11.0
+offset_top = -27.0
+offset_right = 5.0
+offset_bottom = -19.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "PLAYER"
-horizontal_alignment = 1
-clip_text = true
+text = "PB"
 
 [node name="LabelFontChanger" type="Node" parent="Label" node_paths=PackedStringArray("labels")]
 script = ExtResource("6_uj78x")
 labels = [NodePath("..")]
 metadata/_custom_type_script = "uid://co6tjg3w6qpd8"
 
-[node name="PlayerSprite2" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("7_3bqva")
-animation = &"Climb"
+[node name="PlayerSprite" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_chsgd")
+position = Vector2(0, 1)
+sprite_frames = ExtResource("3_3bqva")
+animation = &"Move"
 speed_scale = 0.0
+offset = Vector2(0, 1)
 
-[node name="ResourceSetterNew" type="Node" parent="PlayerSprite2"]
+[node name="ResourceSetterNew" type="Node" parent="PlayerSprite"]
 script = ExtResource("5_uwbxn")
 metadata/_custom_type_script = "uid://cbal8ms2oe1ik"
