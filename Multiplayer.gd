@@ -33,7 +33,15 @@ func _process(delta: float) -> void:
 		local_player = player_nodes[0]
 	if local_player:
 		player_state.rpc(build_multiplayer_data(local_player))
-
+	else:
+		not_playing.rpc()
+@rpc("any_peer", "call_remote", "reliable", 0)
+func not_playing():
+	if !local_player:
+		return
+	var sender_player = local_player.get_parent().get_node_or_null(str(multiplayer.get_remote_sender_id()))
+	if sender_player != null:
+			sender_player.queue_free()
 @rpc("any_peer", "call_remote", "unreliable", 0)
 func player_state(data):
 	if !local_player:
