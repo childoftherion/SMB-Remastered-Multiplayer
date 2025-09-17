@@ -330,7 +330,7 @@ func close_freeze() -> void:
 var recording_dir = "user://marathon_recordings/"
 
 func setup_discord_rpc() -> void:
-	if (Engine.get_architecture_name() == "x86_32"):
+	if (!Engine.get_architecture_name() == "x86_32"):
 		DiscordRPC.app_id = 1331261692381757562
 		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
 		DiscordRPC.details = "In Title Screen.."
@@ -338,7 +338,7 @@ func setup_discord_rpc() -> void:
 			DiscordRPC.refresh()
 
 func set_discord_status(details := "") -> void:
-	if (Engine.get_architecture_name() == "x86_32"):
+	if (!Engine.get_architecture_name() == "x86_32"):
 		DiscordRPC.details = details
 		if DiscordRPC.get_is_discord_working():
 			DiscordRPC.refresh()
@@ -348,13 +348,13 @@ func update_game_status() -> void:
 	if Settings.file.difficulty.inf_lives == 1:
 		lives_str = "∞"
 	var string := "Coins = " + str(Global.coins) + " Lives = " + lives_str
-	if (Engine.get_architecture_name() == "x86_32"):
+	if (!Engine.get_architecture_name() == "x86_32"):
 		DiscordRPC.large_image = (Global.level_theme + Global.theme_time).to_lower()
 		DiscordRPC.small_image = Global.current_campaign.to_lower()
 		DiscordRPC.state = string
 
 func refresh_discord_rpc() -> void:
-	if (Engine.get_architecture_name() == "x86_32"):
+	if (!Engine.get_architecture_name() == "x86_32"):
 		if DiscordRPC.get_is_discord_working() == false:
 			return
 		update_game_status()
