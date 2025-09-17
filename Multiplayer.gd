@@ -14,6 +14,7 @@ func _ready() -> void:
 	
 func build_multiplayer_data(player: Player):
 	var data = {
+		"username": username,
 		"position": { "x": player.global_position.x, "y": player.global_position.y },
 		"animation": player.sprite.animation,
 		"frame": player.sprite.frame,
@@ -39,9 +40,11 @@ func player_state(data):
 		return
 	var sender_player = local_player.get_parent().get_node_or_null(str(multiplayer.get_remote_sender_id()))
 	if sender_player != null:
+		if Global.current_level.scene_file_path != data["level"]:
+			sender_player.queue_free()
 		sender_player.apply_data(data)
 	else:
-		if remote_player:
+		if remote_player and Global.current_level.scene_file_path == data["level"]:
 			var new_remote_player = remote_player.instantiate()
 			new_remote_player.name = str(multiplayer.get_remote_sender_id())
 			local_player.get_parent().add_child(new_remote_player)

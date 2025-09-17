@@ -43,16 +43,15 @@ color = Color(0.968627, 0.223529, 0.0627451, 1)
 script = ExtResource("5_uwbxn")
 metadata/_custom_type_script = "uid://cbal8ms2oe1ik"
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_left = -11.0
-offset_top = -27.0
-offset_right = 5.0
-offset_bottom = -19.0
+[node name="Username" type="Label" parent="."]
+offset_left = -64.0
+offset_top = -32.0
+offset_right = 64.0
+offset_bottom = -16.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "PB"
+horizontal_alignment = 1
 
-[node name="LabelFontChanger" type="Node" parent="Label" node_paths=PackedStringArray("labels")]
+[node name="LabelFontChanger" type="Node" parent="Username" node_paths=PackedStringArray("labels")]
 script = ExtResource("6_uj78x")
 labels = [NodePath("..")]
 metadata/_custom_type_script = "uid://co6tjg3w6qpd8"
@@ -60,8 +59,7 @@ metadata/_custom_type_script = "uid://co6tjg3w6qpd8"
 [node name="PlayerSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_chsgd")
 position = Vector2(0, 1)
-sprite_frames = ExtResource("3_3bqva")
-animation = &"Move"
+animation = &""
 speed_scale = 0.0
 offset = Vector2(0, 1)
 

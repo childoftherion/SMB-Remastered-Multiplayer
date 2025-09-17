@@ -1,5 +1,6 @@
 extends Node2D
 @onready var sprite: AnimatedSprite2D = $PlayerSprite
+@onready var username: Label = $Username
 @export var resource_setter: ResourceSetterNew
 static var idx := 0
 @export var player_id := 0
@@ -36,6 +37,7 @@ func delete() -> void:
 	idx = 0
 
 func apply_data(data) -> void:
+	username.text = data["username"]
 	global_position.x = int(data["position"]["x"])
 	global_position.y = int(data["position"]["y"])
 	sprite.animation = str(data["animation"])
