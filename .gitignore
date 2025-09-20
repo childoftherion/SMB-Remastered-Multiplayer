@@ -2,3 +2,6 @@
 .godot/
 /android/
 Exports/
+
+# Macos
+.DS_Store
