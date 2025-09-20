@@ -10,12 +10,20 @@ var has_downloaded := false
 
 signal level_play
 
+var level_thumbnail = null
+
+var container_to_play: OnlineLevelContainer = null
+
+static var saved_stuff := {}
+
 func _ready() -> void:
 	set_process(false)
 
 func open(container: OnlineLevelContainer) -> void:
-	has_downloaded = FileAccess.file_exists("user://custom_levels/downloaded/" + container.level_id + ".lvl")
+	container_to_play = container.duplicate()
+	has_downloaded = FileAccess.file_exists("user://custom_levels/downloaded/" + container.level_id + ".lvl") or saved_stuff.is_empty() == false
 	show()
+	level_thumbnail = container.level_thumbnail
 	%Download.text = "DOWNLOAD"
 	if has_downloaded:
 		%OnlinePlay.grab_focus()
@@ -30,14 +38,18 @@ func setup_visuals(container: OnlineLevelContainer) -> void:
 	$Panel/AutoScrollContainer.scroll_pos = 0
 	$Panel/AutoScrollContainer.move_direction = -1
 	%LSSDescription.text = "Fetching Description..."
-	%SelectedOnlineLevel.level_name = container.level_name
-	%SelectedOnlineLevel.level_author = container.level_author
-	%SelectedOnlineLevel.level_id = container.level_id
-	%SelectedOnlineLevel.thumbnail_url = container.thumbnail_url
-	%SelectedOnlineLevel.level_thumbnail = container.level_thumbnail
-	%SelectedOnlineLevel.difficulty = container.difficulty
+	if saved_stuff.is_empty():
+		$Description.request(LEVEL_INFO_URL + container.level_id)
+	else:
+		%LSSDescription.text = saved_stuff.description
+	for i in ["level_name", "level_author", "level_id", "thumbnail_url", "level_thumbnail", "difficulty"]:
+		var value = null
+		if saved_stuff.has(i):
+			value = saved_stuff[i]
+		else: value = container.get(i)
+		%SelectedOnlineLevel.set(i, value)
+		saved_stuff[i] = value
 	%SelectedOnlineLevel.setup_visuals()
-	$Description.request(LEVEL_INFO_URL + container.level_id)
 	%Download.visible = not has_downloaded
 	%OnlinePlay.visible = has_downloaded
 
@@ -64,6 +76,7 @@ func on_request_completed(result: int, response_code: int, headers: PackedString
 	var string = body.get_string_from_utf8()
 	var json = JSON.parse_string(string)
 	%LSSDescription.text = Global.sanitize_string(json["level"]["description"])
+	saved_stuff.description = %LSSDescription.text
 
 func level_downloaded(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	var string = body.get_string_from_utf8()
@@ -76,9 +89,16 @@ func level_downloaded(result: int, response_code: int, headers: PackedStringArra
 		data = json.levelData
 	file.store_string(JSON.stringify(str_to_var(data)))
 	file.close()
+	save_thumbnail()
 	%Download.hide()
 	%OnlinePlay.show()
 	%OnlinePlay.grab_focus()
+
+func save_thumbnail() -> void:
+	if OnlineLevelContainer.cached_thumbnails.has(level_id):
+		var thumbnail = OnlineLevelContainer.cached_thumbnails.get(level_id)
+		DirAccess.make_dir_recursive_absolute("user://custom_levels/downloaded/thumbnails")
+		thumbnail.get_image().save_png("user://custom_levels/downloaded/thumbnails/"+ level_id + ".png")
 
 func play_level() -> void:
 	var file_path := "user://custom_levels/downloaded/" + level_id + ".lvl"

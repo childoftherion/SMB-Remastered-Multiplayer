@@ -443,6 +443,7 @@ func handle_wing_flight(delta: float) -> void:
 	flight_meter -= delta
 	if flight_meter <= 0 && $Sprite/Wings.visible:
 		AudioManager.stop_music_override(AudioManager.MUSIC_OVERRIDES.WING)
+		gravity = FALL_GRAVITY
 	$Sprite/Wings.visible = flight_meter >= 0
 	if flight_meter < 0:
 		return
@@ -507,7 +508,7 @@ func do_i_frames() -> void:
 	refresh_hitbox()
 
 func die(pit := false) -> void:
-	if state_machine.state.name == "Dead" or state_machine.state.name == "Pipe":
+	if ["Dead", "Pipe", "LevelExit"].has(state_machine.state.name):
 		return
 	is_dead = true
 	visible = not pit

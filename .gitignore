@@ -2,6 +2,8 @@
 .godot/
 /android/
 Exports/
-
 # Macos
 .DS_Store
+
+# Level guides
+Assets/LevelGuides
